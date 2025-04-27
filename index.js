@@ -1,6 +1,7 @@
 require('dotenv').config()
-
 const { Telegraf, Markup } = require('telegraf')
+const checkSubscription = require('./checkSubscription');
+
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
 const keyboard = Markup.inlineKeyboard([
@@ -15,7 +16,7 @@ const updateKeyboard = Markup.inlineKeyboard([
     Markup.button.url("🔗 GitHub", "https://github.com/jasurumarov")
 ])
 
-bot.action("about", ctx => {
+bot.action("about", checkSubscription, ctx => {
     const message = ctx.callbackQuery.message
     ctx.telegram.editMessageText(
         message.chat.id,
@@ -50,7 +51,7 @@ bot.action("about", ctx => {
 
     )
 })
-bot.action("portfolio", ctx => {
+bot.action("portfolio", checkSubscription, ctx => {
     const message = ctx.callbackQuery.message
     ctx.telegram.editMessageText(
         message.chat.id,
@@ -67,7 +68,7 @@ bot.action("portfolio", ctx => {
     }
     )
 })
-bot.action("contact", ctx => {
+bot.action("contact", checkSubscription, ctx => {
     const message = ctx.callbackQuery.message
     ctx.telegram.editMessageText(
         message.chat.id,
@@ -81,14 +82,14 @@ bot.action("contact", ctx => {
         { reply_markup: updateKeyboard.reply_markup, parse_mode: 'HTML', }
     )
 })
-bot.action("back", ctx => {
+bot.action("back", checkSubscription, ctx => {
     ctx.editMessageText(
         `${ctx.chat.first_name} — Welcome to Jasur's portfolio bot ⚡`,
         { parse_mode: 'HTML', reply_markup: keyboard.reply_markup }
     )
 })
 
-bot.start((ctx) => {
+bot.start(checkSubscription, ctx => {
     ctx.reply(ctx.chat.first_name + " — Welcome to Jasur's portfolio bot ⚡", keyboard)
 })
 
